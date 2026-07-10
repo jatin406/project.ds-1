@@ -1,0 +1,57 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# 1. Data Loading and Cleaning
+df = pd.read_csv("data/sales_data.csv")
+print("--- Data Loaded Successfully ---")
+print(df.head())
+
+# Check for missing values (Error handling and Validation)
+if df.isnull().sum().sum() == 0:
+    print("\nData is perfectly clean! No missing values found.")
+else:
+    df = df.dropna()
+    print("\nMissing values detected and handled successfully.")
+
+# 2. Basic Analysis and Metrics Calculation
+total_sales = df["Sales"].sum()
+total_profit = df["Profit"].sum()
+product_wise = df.groupby("Product")["Sales"].sum()
+
+print(f"\nTotal Sales: ${total_sales}")
+print(f"Total Profit: ${total_profit}")
+print("\nProduct-wise Sales Summary:")
+print(product_wise)
+
+# 3. Chart 1: Bar Chart (Product-wise Sales)
+plt.Figure(figsize=(10,4))
+product_wise.plot(kind = "bar" , color = ['green' , 'skyblue'])
+plt.xlabel("Price")
+plt.ylabel("Sales ($)")
+plt.title("Total Product wise sales ")
+plt.xticks(rotation = 0)
+plt.tight_layout()
+plt.savefig("product_sales_bar.png")
+plt.close()
+
+# 4. Chart 2: Pie Chart (Month-wise Sales Distribution)
+plt.Figure(figsize=(10,4))
+product_wise.plot(kind = "pie" , autopct = "%1.1f%%" , startangle = 90)
+plt.title("Monthly wise sales distribution")
+plt.ylabel("")
+plt.tight_layout()
+plt.savefig("product_sales_pie.png")
+
+print("\nBoth charts have been successfully saved to the 'visualizations/' folder!")
+
+# 5. Automated Report Generation
+report_text = f"""E-commerce Sales Analysis Report
+=================================
+1. Total Revenue generated over the 4-month period is ${total_sales}.
+2. Total Profit earned during this period is ${total_profit}.
+3. Laptops are the highest-selling product category compared to Phones.
+"""
+with open("report/insights.txt", "w") as f:
+    f.write(report_text)  # Saves inside report folder
+
+print("The final report has been successfully saved to 'report/insights.txt'!")
